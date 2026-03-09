@@ -1,0 +1,4 @@
+TEZ_OS development notes:
+- bootloader done
+- FAT12 working
+- TEZ lang v0.1
