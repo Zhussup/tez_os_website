@@ -81,14 +81,12 @@
         </div>
         <div class="window-body">
             <div class="hero">
-                <div class="hero-ascii">
- _______ _______ _______          _______ _______<br>
-|__   __|  _____|___   /        |  ___  ||  _____|<br>
-   | |  | |___     / /          | |   | || |______<br>
-   | |  |  ___|   / /           | |   | || ____  |<br>
-   | |  | |___   / /__  _______ | |___| ||_____| |<br>
-   |_|  |_____|_/_____| |_____| |_______||_______| 
-                </div>
+                <pre class="hero-ascii" style="font-family:'Share Tech Mono',monospace;font-size:14px;display:inline-block;text-align:left;line-height:1.4"> _______ _______ _______          _______ _______
+|__   __|  _____|___   /        |  ___  ||  _____|
+   | |  | |___     / /          | |   | || |______
+   | |  |  ___|   / /           | |   | || ____  |
+   | |  | |___   / /__  _______ | |___| ||_____| |
+   |_|  |_____|_/_____| |_____| |_______||_______| </pre>
                 <p class="hero-sub">
                     A 32-bit operating system written from scratch in C and Assembly.<br>
                     <span class="text-yellow">Real Mode → Protected Mode · FAT12 · VGA · PS/2 · TEZ lang</span>
@@ -317,7 +315,6 @@ TEZ_OS/<br>
 </div>
 
 <script>
-// ── taskbar clock ────────────────────────────────────────────────────────────
 function updateClock() {
     const now = new Date();
     const h = String(now.getHours()).padStart(2,'0');
@@ -328,7 +325,6 @@ function updateClock() {
 updateClock();
 setInterval(updateClock, 1000);
 
-// ── terminal ─────────────────────────────────────────────────────────────────
 const out   = document.getElementById('term-output');
 const input = document.getElementById('term-input');
 const history = [];
