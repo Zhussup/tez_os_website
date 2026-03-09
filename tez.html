@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEZ_OS — TEZ Language</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="marquee-bar">
+    <span class="marquee-inner">
+        ★ TEZ Language v0.1 — C-like language that compiles to x86 machine code &nbsp;&nbsp;&nbsp;
+        ★ variables · functions · if/else · while · for · cons.out() &nbsp;&nbsp;&nbsp;
+        ★ runs directly inside TEZ_OS kernel &nbsp;&nbsp;&nbsp;
+        ★ TEZ Language v0.1 &nbsp;&nbsp;&nbsp;
+    </span>
+</div>
+
+<div class="desktop">
+
+    <!-- HEADER -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">🧮 TEZ Language — Reference</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <h1>TEZ Language</h1>
+            <p>TEZ is a C-like programming language that <span class="text-cyan">compiles directly to 32-bit x86 machine code</span> inside the kernel. No libc, no runtime — pure bare-metal execution.</p>
+            <p>Source files use the <span class="text-yellow">.tez</span> extension. Run with <span class="text-cyan">run prog.tez</span> or use the interactive REPL with <span class="text-cyan">tez</span>.</p>
+            <div class="flex gap-8" style="flex-wrap:wrap; margin-top:12px">
+                <span class="badge">Compiled</span>
+                <span class="badge">x86 32-bit output</span>
+                <span class="badge">In-kernel JIT</span>
+                <span class="badge">No runtime deps</span>
+                <span class="badge">C-like syntax</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- TYPES -->
+    <div class="grid-2">
+        <div class="window">
+            <div class="window-titlebar">
+                <div class="title-left">📦 Types</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <table>
+                    <tr><th>Type</th><th>Description</th><th>Example</th></tr>
+                    <tr>
+                        <td class="cmd-name">int</td>
+                        <td>32-bit signed integer</td>
+                        <td class="cmd-syntax">int x = 42;</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">float</td>
+                        <td>Floating point (treated as int in v0.1)</td>
+                        <td class="cmd-syntax">float y = 3;</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">ch</td>
+                        <td>Single character (ASCII)</td>
+                        <td class="cmd-syntax">ch c = 'A';</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">str</td>
+                        <td>Null-terminated string pointer</td>
+                        <td class="cmd-syntax">str s = "hello";</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">tf</td>
+                        <td>Boolean (true / false)</td>
+                        <td class="cmd-syntax">tf flag = true;</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">nr</td>
+                        <td>No return (void for functions)</td>
+                        <td class="cmd-syntax">nr F main() {}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="window">
+            <div class="window-titlebar">
+                <div class="title-left">⚙ Operators</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <table>
+                    <tr><th>Operator</th><th>Description</th></tr>
+                    <tr><td class="cmd-name">+  -  *  /  %</td><td>Arithmetic</td></tr>
+                    <tr><td class="cmd-name">==  !=</td><td>Equality</td></tr>
+                    <tr><td class="cmd-name">&lt;  &gt;  &lt;=  &gt;=</td><td>Comparison</td></tr>
+                    <tr><td class="cmd-name">&amp;&amp;  ||  !</td><td>Logical AND, OR, NOT</td></tr>
+                    <tr><td class="cmd-name">=</td><td>Assignment</td></tr>
+                </table>
+                <hr class="divider">
+                <h3>Operator Precedence</h3>
+                <p class="text-dim" style="font-size:12px">
+                    High → Low:<br>
+                    ! - (unary) &nbsp;→&nbsp; * / % &nbsp;→&nbsp; + - &nbsp;→&nbsp; &lt; &gt; &lt;= &gt;= &nbsp;→&nbsp; == != &nbsp;→&nbsp; &amp;&amp; &nbsp;→&nbsp; ||
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- VARIABLES -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">📝 Variables</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Declaration</h3>
+                    <div class="code-block">
+<span class="type">int</span> x = <span class="num">42</span>;<br>
+<span class="type">int</span> y = <span class="num">0</span>;<br>
+<span class="type">str</span> msg = <span class="str">"hello world"</span>;<br>
+<span class="type">ch</span>  letter = <span class="str">'A'</span>;<br>
+<span class="type">tf</span>  flag = <span class="kw">true</span>;<br>
+                    </div>
+                    <h3>Assignment</h3>
+                    <div class="code-block">
+x = x + <span class="num">1</span>;<br>
+y = x * <span class="num">2</span> + <span class="num">5</span>;<br>
+flag = <span class="kw">false</span>;<br>
+                    </div>
+                </div>
+                <div>
+                    <h3>Output with cons.out()</h3>
+                    <div class="code-block">
+<span class="type">int</span> n = <span class="num">100</span>;<br>
+<span class="fn">cons.out</span>(n);&nbsp;&nbsp;&nbsp;<span class="cmt">// prints: 100</span><br><br>
+<span class="type">str</span> s = <span class="str">"hi"</span>;<br>
+<span class="fn">cons.out</span>(s);&nbsp;&nbsp;&nbsp;<span class="cmt">// prints: hi</span><br>
+                    </div>
+                    <p class="text-dim" style="font-size:12px; margin-top:8px">
+                        cons.out() automatically adds a newline after output. For integers, prints decimal representation. For strings, prints the string content.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROL FLOW -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">🔀 Control Flow</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-3">
+                <div>
+                    <h3>if / else</h3>
+                    <div class="code-block">
+<span class="kw">if</span> (x &gt; <span class="num">10</span>) {<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(x);<br>
+} <span class="kw">else</span> {<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(y);<br>
+}
+                    </div>
+                </div>
+                <div>
+                    <h3>while</h3>
+                    <div class="code-block">
+<span class="type">int</span> i = <span class="num">0</span>;<br>
+<span class="kw">while</span> (i &lt; <span class="num">10</span>) {<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(i);<br>
+&nbsp;&nbsp;i = i + <span class="num">1</span>;<br>
+}
+                    </div>
+                </div>
+                <div>
+                    <h3>for</h3>
+                    <div class="code-block">
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; i &lt; <span class="num">5</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; i = i + <span class="num">1</span>) {<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(i);<br>
+}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FUNCTIONS -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">⚙ Functions</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Declaration syntax</h3>
+                    <p class="text-dim" style="font-size:12px; margin-bottom:8px">
+                        Format: <span class="text-cyan">return_type F name(type param, ...) { body }</span>
+                    </p>
+                    <div class="code-block">
+<span class="cmt">// function with return value</span><br>
+<span class="type">int</span> <span class="kw">F</span> <span class="fn">add</span>(<span class="type">int</span> a, <span class="type">int</span> b) {<br>
+&nbsp;&nbsp;<span class="kw">rtn</span> a + b;<br>
+}<br><br>
+<span class="cmt">// void function</span><br>
+<span class="type">nr</span> <span class="kw">F</span> <span class="fn">greet</span>(<span class="type">int</span> n) {<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(n);<br>
+}
+                    </div>
+                </div>
+                <div>
+                    <h3>Calling functions</h3>
+                    <div class="code-block">
+<span class="type">int</span> result = <span class="fn">add</span>(<span class="num">10</span>, <span class="num">20</span>);<br>
+<span class="fn">cons.out</span>(result);<br>
+<span class="cmt">// output: 30</span><br><br>
+<span class="fn">greet</span>(<span class="num">42</span>);<br>
+<span class="cmt">// output: 42</span><br>
+                    </div>
+                    <hr class="divider">
+                    <p class="text-dim" style="font-size:12px">
+                        Functions must be declared before they are called (top-down order). Max 8 parameters. Max 32 functions per program.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULL EXAMPLE -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">📄 Full Example Program</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <h3>fibonacci.tez</h3>
+                    <div class="code-block">
+<span class="cmt">// compute nth fibonacci number</span><br>
+<span class="type">int</span> <span class="kw">F</span> <span class="fn">fib</span>(<span class="type">int</span> n) {<br>
+&nbsp;&nbsp;<span class="kw">if</span> (n &lt;= <span class="num">1</span>) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">rtn</span> n;<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;<span class="kw">rtn</span> <span class="fn">fib</span>(n - <span class="num">1</span>) + <span class="fn">fib</span>(n - <span class="num">2</span>);<br>
+}<br><br>
+<span class="type">int</span> i = <span class="num">0</span>;<br>
+<span class="kw">while</span> (i &lt; <span class="num">10</span>) {<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(<span class="fn">fib</span>(i));<br>
+&nbsp;&nbsp;i = i + <span class="num">1</span>;<br>
+}
+                    </div>
+                </div>
+                <div>
+                    <h3>counter.tez</h3>
+                    <div class="code-block">
+<span class="cmt">// count down from 10</span><br>
+<span class="type">int</span> n = <span class="num">10</span>;<br>
+<span class="kw">while</span> (n &gt; <span class="num">0</span>) {<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(n);<br>
+&nbsp;&nbsp;n = n - <span class="num">1</span>;<br>
+}<br><br>
+<span class="cmt">// for loop example</span><br>
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; i &lt;= <span class="num">5</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; i = i + <span class="num">1</span>) {<br>
+&nbsp;&nbsp;<span class="type">int</span> sq = i * i;<br>
+&nbsp;&nbsp;<span class="fn">cons.out</span>(sq);<br>
+}
+                    </div>
+                </div>
+            </div>
+            <hr class="divider">
+            <h3>How to run</h3>
+            <div class="code-block">
+<span class="cmt"># create the file with tuze editor</span><br>
+<span class="prompt">&gt; </span>tuze fibonacci.tez<br><br>
+<span class="cmt"># or create with mkf for short programs</span><br>
+<span class="prompt">&gt; </span>mkf test.tez int x = 5; cons.out(x);<br><br>
+<span class="cmt"># run it</span><br>
+<span class="prompt">&gt; </span>run fibonacci.tez
+            </div>
+        </div>
+    </div>
+
+    <!-- INTERNALS -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">🔧 How TEZ Compiles</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="terminal">
+                source.tez<br>
+                &nbsp;&nbsp;&nbsp;<span class="text-yellow">↓ tez_lexer.c</span><br>
+                Token stream [TK_INT, TK_IDENT("x"), TK_ASSIGN, TK_INT_LIT(42), ...]<br>
+                &nbsp;&nbsp;&nbsp;<span class="text-yellow">↓ tez_parser.c</span><br>
+                AST: ND_VAR_DECL(x) → ND_INT(42)<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ND_CONS_OUT → ND_IDENT(x)<br>
+                &nbsp;&nbsp;&nbsp;<span class="text-yellow">↓ tez_codegen.c</span><br>
+                x86: push ebp; mov ebp,esp; sub esp,4<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mov eax,42; mov [ebp-4],eax<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mov eax,[ebp-4]; push eax; call print_int<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mov esp,ebp; pop ebp; ret<br>
+                &nbsp;&nbsp;&nbsp;<span class="text-yellow">↓ direct call</span><br>
+                <span class="text-cyan">output: 42</span>
+            </div>
+            <hr class="divider">
+            <p class="text-dim" style="font-size:12px">
+                The compiled code lives in a static 8KB buffer in kernel BSS. 
+                Variables are allocated on the stack (ebp frame). 
+                cons.out() calls kernel's vga_putchar/vga_print directly via absolute address.
+                No memory protection — runs in ring 0, flat 32-bit address space.
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<div class="taskbar">
+    <a href="index.html" class="start-btn"><span class="logo">⊞</span> TEZ_OS</a>
+    <div class="taskbar-nav">
+        <a href="index.html">Home</a>
+        <a href="shell.html">Shell</a>
+        <a href="tez.html" class="active">TEZ</a>
+        <a href="screenshots.html">Screenshots</a>
+        <a href="about.html">About</a>
+    </div>
+    <div class="taskbar-clock" id="clock">00:00:00</div>
+</div>
+<script>
+function updateClock(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');}
+updateClock();setInterval(updateClock,1000);
+</script>
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEZ_OS — Screenshots</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.screen-frame {
+    background: #000;
+    border: 4px solid #555;
+    border-radius: 4px;
+    padding: 0;
+    box-shadow: 0 0 30px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+    overflow: hidden;
+    position: relative;
+}
+.screen-frame::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+        0deg, rgba(0,0,0,0.08) 0px, rgba(0,0,0,0.08) 1px,
+        transparent 1px, transparent 3px
+    );
+    pointer-events: none;
+    z-index: 10;
+}
+.screen-title {
+    background: #333;
+    color: #aaa;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-bottom: 1px solid #555;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.screen-dot { width:10px;height:10px;border-radius:50%;display:inline-block; }
+.screen-content {
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    line-height: 1.35;
+    padding: 8px 10px;
+    min-height: 200px;
+    color: #00ff00;
+    background: #000;
+}
+.screen-caption {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<div class="marquee-bar">
+    <span class="marquee-inner">
+        ★ TEZ_OS Screenshots — see it in action &nbsp;&nbsp;&nbsp;
+        ★ VGA text mode 80×25 · cyan on black · real-time clock &nbsp;&nbsp;&nbsp;
+        ★ TEZ_OS Screenshots &nbsp;&nbsp;&nbsp;
+    </span>
+</div>
+
+<div class="desktop">
+
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">📸 Screenshots &amp; Demo</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <p>All screenshots are rendered in VGA text mode 80×25 at 720×400px. The OS runs in QEMU emulating a 486/Pentium with a 1.44MB floppy drive.</p>
+        </div>
+    </div>
+
+    <!-- NEOFETCH / BOOT -->
+    <div class="grid-2">
+        <div>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="title-left">sinf — System Info</div>
+                    <div class="window-controls"><div class="window-btn">×</div></div>
+                </div>
+                <div class="window-body" style="padding:0">
+                    <div class="screen-frame">
+                        <div class="screen-title">
+                            <span class="screen-dot" style="background:#ff5f56"></span>
+                            <span class="screen-dot" style="background:#ffbd2e"></span>
+                            <span class="screen-dot" style="background:#27c93f"></span>
+                            QEMU — TEZ_OS
+                        </div>
+                        <div class="screen-content">
+<span style="color:#00ffff"> _______ _______ _______          _______ _______ </span><br>
+<span style="color:#00ffff">|__   __|  _____|___   /        |  ___  ||  _____|</span><br>
+<span style="color:#00ffff">   | |  | |___     / /          | |   | || |______</span><br>
+<span style="color:#00ffff">   | |  |  ___|   / /           | |   | || ____  |</span><br>
+<span style="color:#00ffff">   | |  | |___   / /__  _______ | |___| ||_____| |</span><br>
+<span style="color:#00ffff">   |_|  |_____|_/_____| |_____| |_______||_______| </span><br>
+&nbsp;<br>
+&nbsp; OS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">TEZ_OS</span><br>
+&nbsp; Arch:&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">x86 32-bit</span><br>
+&nbsp; Kernel:&nbsp;&nbsp;<span style="color:#00ff00">JZA kernel</span><br>
+&nbsp; Boot:&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">custom bootloader</span><br>
+&nbsp; FS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">FAT12</span><br>
+&nbsp; Display: <span style="color:#00ff00">VGA text 80x25</span><br>
+&nbsp; Input:&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">PS/2 keyboard</span><br>
+&nbsp;<br>
+<span style="color:#ffff00">type 'hlp' for commands</span><br>
+&nbsp;<br>
+<span style="color:#00ffff">&gt; </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="screen-caption">sinf command — neofetch-style system information</p>
+        </div>
+
+        <!-- SHELL SESSION -->
+        <div>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="title-left">Shell session</div>
+                    <div class="window-controls"><div class="window-btn">×</div></div>
+                </div>
+                <div class="window-body" style="padding:0">
+                    <div class="screen-frame">
+                        <div class="screen-title">
+                            <span class="screen-dot" style="background:#ff5f56"></span>
+                            <span class="screen-dot" style="background:#ffbd2e"></span>
+                            <span class="screen-dot" style="background:#27c93f"></span>
+                            QEMU — TEZ_OS
+                            <span style="margin-left:auto;color:#00ffff">06:42:17 09/03/2026</span>
+                        </div>
+                        <div class="screen-content">
+<span style="color:#00ffff">&gt; </span>room<br>
+<span style="color:#ffff00">Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Size</span><br>
+<span style="color:#ffffff">------------&nbsp;&nbsp;&nbsp;----</span><br>
+HELLO&nbsp;&nbsp;&nbsp;&nbsp;.TXT&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">18</span><br>
+NOTES&nbsp;&nbsp;&nbsp;&nbsp;.TXT&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">42</span><br>
+PROG&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.TEZ&nbsp;&nbsp;&nbsp;<span style="color:#00ff00">87</span><br>
+&nbsp;<br>
+<span style="color:#00ff00">3 file(s)</span><br>
+<span style="color:#00ffff">&gt; </span>show HELLO.TXT<br>
+Hello from FAT12!<br>
+<span style="color:#00ffff">&gt; </span>time<br>
+<span style="color:#00ffff">time: </span>06:42:19&nbsp;&nbsp;<span style="color:#00ffff">date: </span>09/03/2026<br>
+<span style="color:#00ffff">&gt; </span>calc sin(pi/2)<br>
+<span style="color:#00ff00">= 1</span><br>
+<span style="color:#00ffff">&gt; </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="screen-caption">Shell — file listing, show, time, calculator</p>
+        </div>
+    </div>
+
+    <!-- TUZE EDITOR + CALC -->
+    <div class="grid-2">
+        <div>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="title-left">tuze — Text Editor</div>
+                    <div class="window-controls"><div class="window-btn">×</div></div>
+                </div>
+                <div class="window-body" style="padding:0">
+                    <div class="screen-frame">
+                        <div class="screen-title">QEMU — TEZ_OS</div>
+                        <div class="screen-content">
+<span style="color:#888">  1 </span>int x = 42;<br>
+<span style="color:#888">  2 </span>int y = 10;<br>
+<span style="color:#888">  3 </span><br>
+<span style="color:#888">  4 </span>int F add(int a, int b) {<br>
+<span style="color:#888">  5 </span>&nbsp;&nbsp;rtn a + b;<br>
+<span style="color:#888">  6 </span>}<br>
+<span style="color:#888">  7 </span><br>
+<span style="color:#888">  8 </span>cons.out(add(x, y));<br>
+<span style="color:#888">  9 </span><br>
+&nbsp;<br>
+&nbsp;<br>
+<span style="background:#306030;color:#000;display:block;padding:0 4px">PROG.TEZ&nbsp;&nbsp;Ctrl+S save&nbsp;&nbsp;Ctrl+Q quit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*</span>
+<span style="background:#d0d0d0;color:#000;display:block;padding:0 4px">L:8 C:25</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="screen-caption">TUZE editor — line numbers, status bar, cursor position</p>
+        </div>
+
+        <div>
+            <div class="window">
+                <div class="window-titlebar">
+                    <div class="title-left">calc — Calculator</div>
+                    <div class="window-controls"><div class="window-btn">×</div></div>
+                </div>
+                <div class="window-body" style="padding:0">
+                    <div class="screen-frame">
+                        <div class="screen-title">QEMU — TEZ_OS</div>
+                        <div class="screen-content">
+<span style="color:#00ffff">&gt; </span>calc<br>
+&nbsp;<br>
+<span style="color:#00ffff">&nbsp;&nbsp;calc  |  Ctrl+Q to quit</span><br>
+<span style="color:#888">&nbsp;&nbsp;ops: + - * / % ** ^  |  fn: sin cos tan tg ctan ctg sqrt ln abs</span><br>
+<span style="color:#888">&nbsp;&nbsp;const: pi e</span><br>
+&nbsp;<br>
+<span style="color:#00ffff">calc&gt; </span>2**10<br>
+<span style="color:#00ff00">= 1024</span><br>
+<span style="color:#00ffff">calc&gt; </span>sin(pi/6)<br>
+<span style="color:#00ff00">= 0.5</span><br>
+<span style="color:#00ffff">calc&gt; </span>sqrt(144)<br>
+<span style="color:#00ff00">= 12</span><br>
+<span style="color:#00ffff">calc&gt; </span>(100 % 7) * 3<br>
+<span style="color:#00ff00">= 6</span><br>
+<span style="color:#00ffff">calc&gt; </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="screen-caption">Calculator REPL — arbitrary precision float math</p>
+        </div>
+    </div>
+
+    <!-- TEZ LANGUAGE RUN -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">run prog.tez — TEZ Language in action</div>
+            <div class="window-controls"><div class="window-btn">×</div></div>
+        </div>
+        <div class="window-body" style="padding:0">
+            <div class="screen-frame" style="max-width:600px;margin:0 auto">
+                <div class="screen-title">QEMU — TEZ_OS</div>
+                <div class="screen-content">
+<span style="color:#00ffff">&gt; </span>run fib.tez<br>
+<span style="color:#00ff00">0</span><br>
+<span style="color:#00ff00">1</span><br>
+<span style="color:#00ff00">1</span><br>
+<span style="color:#00ff00">2</span><br>
+<span style="color:#00ff00">3</span><br>
+<span style="color:#00ff00">5</span><br>
+<span style="color:#00ff00">8</span><br>
+<span style="color:#00ff00">13</span><br>
+<span style="color:#00ff00">21</span><br>
+<span style="color:#00ff00">34</span><br>
+<span style="color:#00ffff">&gt; </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOW TO RUN -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">▶ Run it yourself</div>
+            <div class="window-controls"><div class="window-btn">×</div></div>
+        </div>
+        <div class="window-body-gray">
+            <div class="flex gap-16" style="align-items:center;flex-wrap:wrap">
+                <div>
+                    <p style="color:#000;font-family:'Share Tech Mono',monospace;font-size:13px">
+                        Download the disk image and run with QEMU:
+                    </p>
+                    <div class="code-block" style="margin-top:8px">
+                        qemu-system-i386 -drive file=os.img,format=raw,if=floppy
+                    </div>
+                </div>
+                <a href="os.img" download class="btn btn-download">▼ Download os.img</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="taskbar">
+    <a href="index.html" class="start-btn"><span class="logo">⊞</span> TEZ_OS</a>
+    <div class="taskbar-nav">
+        <a href="index.html">Home</a>
+        <a href="shell.html">Shell</a>
+        <a href="tez.html">TEZ</a>
+        <a href="screenshots.html" class="active">Screenshots</a>
+        <a href="about.html">About</a>
+    </div>
+    <div class="taskbar-clock" id="clock">00:00:00</div>
+</div>
+<script>
+function updateClock(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');}
+updateClock();setInterval(updateClock,1000);
+</script>
+</body>
+</html>

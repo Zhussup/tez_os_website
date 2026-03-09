@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEZ_OS — About &amp; Code</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="marquee-bar">
+    <span class="marquee-inner">
+        ★ TEZ_OS — built from scratch in C and Assembly &nbsp;&nbsp;&nbsp;
+        ★ ~3000 lines of code · no external libraries &nbsp;&nbsp;&nbsp;
+        ★ Real Mode → Protected Mode · FAT12 · IDT · PIC · RTC · PIT · TEZ lang &nbsp;&nbsp;&nbsp;
+        ★ TEZ_OS — built from scratch &nbsp;&nbsp;&nbsp;
+    </span>
+</div>
+
+<div class="desktop">
+
+    <!-- ABOUT -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">ℹ About TEZ_OS</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <h1>About TEZ_OS</h1>
+            <p>TEZ_OS is a <span class="text-cyan">32-bit x86 operating system</span> written entirely from scratch in C and x86 Assembly. It runs on real hardware or any x86 emulator (QEMU, VirtualBox, Bochs).</p>
+            <p>The project started as a learning exercise — understanding how computers actually work at the lowest level. No tutorials were fully followed. Every component was designed and debugged manually.</p>
+            <div class="grid-3" style="margin-top:16px">
+                <div style="text-align:center">
+                    <div style="font-family:'Press Start 2P',monospace;font-size:24px;color:var(--text-cyan);text-shadow:var(--glow-cyan)">~3K</div>
+                    <div class="text-dim" style="font-size:12px;margin-top:4px">lines of code</div>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-family:'Press Start 2P',monospace;font-size:24px;color:var(--text-yellow)">16</div>
+                    <div class="text-dim" style="font-size:12px;margin-top:4px">source files</div>
+                </div>
+                <div style="text-align:center">
+                    <div style="font-family:'Press Start 2P',monospace;font-size:24px;color:var(--text)">0</div>
+                    <div class="text-dim" style="font-size:12px;margin-top:4px">external libraries</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOTLOADER -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">🥾 boot.asm — Bootloader</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <h3>What it does</h3>
+                    <p>The bootloader lives in sector 0 of the disk — exactly 512 bytes, ending with the magic signature <span class="text-cyan">0xAA55</span>. BIOS loads it to address <span class="text-yellow">0x7C00</span> and jumps to it.</p>
+                    <p>It includes a full <span class="text-cyan">BPB (BIOS Parameter Block)</span> so the disk is recognized as a valid FAT12 floppy.</p>
+                    <p>After printing a loading message, it uses <span class="text-cyan">INT 13h / AH=42h</span> (Extended Read with DAP) to load the kernel from LBA 50 into memory at <span class="text-yellow">0x10000</span>.</p>
+                    <p>Then it sets up the <span class="text-cyan">GDT</span> (Global Descriptor Table) with code and data segments, sets bit 0 of CR0 to enable Protected Mode, and does a far jump to 32-bit code.</p>
+                </div>
+                <div>
+                    <h3>Key code</h3>
+                    <div class="code-block" style="font-size:14px">
+<span class="cmt">; DAP — Disk Address Packet</span><br>
+dap:<br>
+&nbsp;&nbsp;db 0x10&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">; size</span><br>
+&nbsp;&nbsp;db 0<br>
+&nbsp;&nbsp;dw 128&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">; sectors to read</span><br>
+&nbsp;&nbsp;dw 0x0000&nbsp;&nbsp;&nbsp;<span class="cmt">; buffer offset</span><br>
+&nbsp;&nbsp;dw 0x1000&nbsp;&nbsp;&nbsp;<span class="cmt">; buffer segment → 0x10000</span><br>
+&nbsp;&nbsp;dq 50&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">; start LBA</span><br>
+<br>
+<span class="cmt">; switch to protected mode</span><br>
+cli<br>
+lgdt [gdt_descriptor]<br>
+mov eax, cr0<br>
+or eax, 1<br>
+mov cr0, eax<br>
+jmp 0x08:pm_entry
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IDT + PIC -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">⚡ idt.c — Interrupts &amp; PIC</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <h3>IDT (Interrupt Descriptor Table)</h3>
+                    <p>The IDT maps interrupt numbers to handler functions. Each entry is 8 bytes containing the handler address, code segment selector, and flags.</p>
+                    <p>TEZ_OS sets up 256 IDT entries (all initially zeroed), then installs handlers for <span class="text-cyan">IRQ0 (PIT timer)</span> at INT32 and <span class="text-cyan">IRQ1 (keyboard)</span> at INT33.</p>
+                    <h3>PIC Remapping</h3>
+                    <p>The original x86 PIC maps hardware IRQs to INT 8–15, which conflicts with CPU exceptions. TEZ_OS remaps the PIC so <span class="text-yellow">IRQ0 = INT32</span>, IRQ1 = INT33, etc.</p>
+                    <p>Mask register: <span class="text-cyan">0xFC</span> (11111100) — allows only IRQ0 and IRQ1.</p>
+                </div>
+                <div>
+                    <div class="code-block" style="font-size:14px">
+<span class="cmt">// PIC remap: ICW1–ICW4</span><br>
+outb(PIC1_COMMAND, 0x11);<br>
+outb(PIC2_COMMAND, 0x11);<br>
+outb(PIC1_DATA, 0x20);&nbsp;&nbsp;<span class="cmt">// IRQ0=INT32</span><br>
+outb(PIC2_DATA, 0x28);&nbsp;&nbsp;<span class="cmt">// IRQ8=INT40</span><br>
+outb(PIC1_DATA, 0x04);<br>
+outb(PIC2_DATA, 0x02);<br>
+outb(PIC1_DATA, 0x01);<br>
+outb(PIC2_DATA, 0x01);<br>
+<span class="cmt">// allow IRQ0 + IRQ1 only</span><br>
+outb(PIC1_DATA, 0xFC);<br>
+outb(PIC2_DATA, 0xFF);
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAT12 -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">💾 fat12.c — Filesystem</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <h3>FAT12 Layout</h3>
+                    <table style="font-size:12px">
+                        <tr><th>Sector</th><th>Content</th></tr>
+                        <tr><td>0</td><td>Boot sector (BPB)</td></tr>
+                        <tr><td>1–9</td><td>FAT copy 1</td></tr>
+                        <tr><td>10–18</td><td>FAT copy 2</td></tr>
+                        <tr><td>19–32</td><td>Root directory (224 entries)</td></tr>
+                        <tr><td>33+</td><td>Data clusters</td></tr>
+                        <tr><td>50+</td><td>Kernel binary (seek=50)</td></tr>
+                    </table>
+                    <hr class="divider">
+                    <h3>12-bit FAT entries</h3>
+                    <p class="text-dim" style="font-size:12px">Each cluster is referenced by a 12-bit value. 0x000 = free, 0xFF8–0xFFF = end of chain. Reading requires bit manipulation to extract odd/even 12-bit values from packed bytes.</p>
+                </div>
+                <div>
+                    <h3>Operations</h3>
+                    <div class="code-block" style="font-size:14px">
+<span class="cmt">// read file</span><br>
+fat12_read(name, buf, size);<br><br>
+<span class="cmt">// write / create file</span><br>
+fat12_write(name, buf, size);<br><br>
+<span class="cmt">// delete file</span><br>
+fat12_delete(name);&nbsp;&nbsp;<span class="cmt">// entry[0] = 0xE5</span><br><br>
+<span class="cmt">// list root directory</span><br>
+fat12_ls();<br><br>
+<span class="cmt">// file name format: 8+3</span><br>
+<span class="cmt">// "HELLO   TXT" (padded)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RTC + PIT -->
+    <div class="grid-2">
+        <div class="window">
+            <div class="window-titlebar">
+                <div class="title-left">⏰ rtc.c — Real Time Clock</div>
+                <div class="window-controls"><div class="window-btn">×</div></div>
+            </div>
+            <div class="window-body">
+                <p>Reads time and date from the <span class="text-cyan">CMOS RTC</span> via ports 0x70 (address) and 0x71 (data). CMOS stores values in BCD format — each byte encodes two decimal digits.</p>
+                <div class="code-block" style="font-size:14px">
+<span class="cmt">// read CMOS register</span><br>
+outb(0x70, reg);<br>
+val = inb(0x71);<br><br>
+<span class="cmt">// BCD → binary</span><br>
+bin = (bcd &amp; 0x0F) + (bcd &gt;&gt; 4) * 10;<br><br>
+<span class="cmt">// timezone offset UTC+5</span><br>
+t-&gt;hour = (hour + 5) % 24;
+                </div>
+                <p class="text-dim" style="font-size:12px; margin-top:8px">Checks "Update in Progress" flag (bit 7 of register 0x0A) before reading to avoid getting corrupted mid-update values.</p>
+            </div>
+        </div>
+
+        <div class="window">
+            <div class="window-titlebar">
+                <div class="title-left">⏱ pit.c — Timer</div>
+                <div class="window-controls"><div class="window-btn">×</div></div>
+            </div>
+            <div class="window-body">
+                <p>The <span class="text-cyan">PIT (Programmable Interval Timer)</span> chip fires IRQ0 at a configurable frequency. TEZ_OS programs it to fire at <span class="text-yellow">100 Hz</span>.</p>
+                <div class="code-block" style="font-size:14px">
+<span class="cmt">// PIT base frequency: 1193180 Hz</span><br>
+<span class="cmt">// divisor for 100 Hz:</span><br>
+#define PIT_DIVISOR (1193180 / 100)<br><br>
+outb(0x43, 0x36);&nbsp;&nbsp;<span class="cmt">// mode</span><br>
+outb(0x40, lo);&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// divisor low</span><br>
+outb(0x40, hi);&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">// divisor high</span>
+                </div>
+                <p class="text-dim" style="font-size:12px; margin-top:8px">Every 100 ticks (1 second), the handler calls <span class="text-cyan">clock_update()</span> which writes the current time directly to VGA memory at columns 61–79 of row 0.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TEZ LANG INTERNALS -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">🧮 TEZ Language — Compiler Internals</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-3">
+                <div>
+                    <h3>tez_lexer.c</h3>
+                    <p>Tokenizes source code into a flat array of <span class="text-cyan">Token</span> structs. Handles keywords, identifiers, integer literals, string literals, char literals, and operators.</p>
+                    <p>Identifiers are <span class="text-yellow">interned</span> in a string table — the same name always gets the same index, which is critical for variable lookup in codegen.</p>
+                    <p class="text-dim" style="font-size:12px">Special: recognizes <span class="text-cyan">cons.out</span> as a single token (dot notation).</p>
+                </div>
+                <div>
+                    <h3>tez_parser.c</h3>
+                    <p>Recursive descent parser that builds an <span class="text-cyan">AST</span> (Abstract Syntax Tree) in a flat node pool. Each node has type, value, and up to 6 child indices.</p>
+                    <p>Expression parsing respects full operator precedence: unary → mul → add → compare → equality → and → or.</p>
+                    <p class="text-dim" style="font-size:12px">Supports: var declarations, assignments, if/else, while, for, function declarations and calls, rtn, cons.out.</p>
+                </div>
+                <div>
+                    <h3>tez_codegen.c</h3>
+                    <p>Walks the AST and emits <span class="text-cyan">raw x86 32-bit machine code</span> into an 8KB buffer. Uses standard cdecl calling convention with ebp frames.</p>
+                    <p>Variables are stored on the stack at <span class="text-yellow">[ebp - slot*4]</span>. Frame size is patched after the function body is emitted.</p>
+                    <p class="text-dim" style="font-size:12px">cons.out() calls kernel's vga_print/vga_putchar via absolute function pointer — MOV EAX, addr; CALL EAX.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KEYBOARD -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">⌨ keyboard.c — PS/2 Driver</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <p>PS/2 keyboard generates <span class="text-cyan">scan codes</span> on port 0x60. Each keypress generates a "make" code; release generates "break" code (make | 0x80).</p>
+                    <p>TEZ_OS uses two lookup tables — <span class="text-yellow">sc_normal[]</span> and <span class="text-yellow">sc_shift[]</span> — to translate scan codes to ASCII characters.</p>
+                    <p>Shift and Caps Lock state is tracked. Characters are pushed to a <span class="text-cyan">256-byte ring buffer</span> — decoupling the IRQ handler from the shell read loop.</p>
+                </div>
+                <div>
+                    <div class="code-block" style="font-size:14px">
+<span class="cmt">// ring buffer</span><br>
+static char buf[256];<br>
+static int head=0, tail=0;<br><br>
+<span class="cmt">// IRQ1 handler</span><br>
+uint8_t sc = inb(0x60);<br>
+if (sc &amp; 0x80) {<br>
+&nbsp;&nbsp;<span class="cmt">// key release</span><br>
+&nbsp;&nbsp;if (sc==0xAA||sc==0xB6)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shift = 0;<br>
+} else {<br>
+&nbsp;&nbsp;<span class="cmt">// key press → ASCII</span><br>
+&nbsp;&nbsp;char c = sc_normal[sc];<br>
+&nbsp;&nbsp;buf_push(c);<br>
+}<br>
+pic_send_eoi();<br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">🔗 Links</div>
+            <div class="window-controls"><div class="window-btn">×</div></div>
+        </div>
+        <div class="window-body-gray">
+            <div class="flex gap-16" style="flex-wrap:wrap">
+                <a href="https://github.com" class="btn">⌥ GitHub</a>
+                <a href="index.html" class="btn">⊞ Home</a>
+                <a href="shell.html" class="btn">⌨ Shell Docs</a>
+                <a href="tez.html" class="btn">🧮 TEZ Language</a>
+                <a href="os.img" download class="btn btn-download">▼ Download os.img</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="taskbar">
+    <a href="index.html" class="start-btn"><span class="logo">⊞</span> TEZ_OS</a>
+    <div class="taskbar-nav">
+        <a href="index.html">Home</a>
+        <a href="shell.html">Shell</a>
+        <a href="tez.html">TEZ</a>
+        <a href="screenshots.html">Screenshots</a>
+        <a href="about.html" class="active">About</a>
+    </div>
+    <div class="taskbar-clock" id="clock">00:00:00</div>
+</div>
+<script>
+function updateClock(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');}
+updateClock();setInterval(updateClock,1000);
+</script>
+</body>
+</html>

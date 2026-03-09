@@ -1,0 +1,13 @@
+{
+  "name": "tez-os-site",
+  "version": "1.0.0",
+  "description": "TEZ_OS website with live shell",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npx nodemon server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

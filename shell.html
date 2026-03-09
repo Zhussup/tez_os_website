@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEZ_OS — Shell Commands</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="marquee-bar">
+    <span class="marquee-inner">
+        ★ TEZ_OS Shell Reference &nbsp;&nbsp;&nbsp; ★ type 'hlp' to see all commands &nbsp;&nbsp;&nbsp;
+        ★ use ↑↓ arrows to navigate history &nbsp;&nbsp;&nbsp; ★ Ctrl+Q to quit editors &nbsp;&nbsp;&nbsp;
+        ★ TEZ_OS Shell Reference &nbsp;&nbsp;&nbsp;
+    </span>
+</div>
+
+<div class="desktop">
+
+    <!-- HEADER -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">⌨ Shell — Command Reference</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="terminal" style="margin-bottom:0">
+                <span class="prompt">&gt; </span><span class="cmd">hlp</span><br>
+                <span style="color:var(--text-yellow)">Available commands:</span><br>
+                <span class="prompt">&nbsp;&nbsp;hlp &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- show this help</span><br>
+                <span class="prompt">&nbsp;&nbsp;clr &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- clear the screen</span><br>
+                <span class="prompt">&nbsp;&nbsp;sinf &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- show system info</span><br>
+                <span class="prompt">&nbsp;&nbsp;room &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- list files on disk</span><br>
+                <span class="prompt">&nbsp;&nbsp;show &lt;f&gt; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- print file contents</span><br>
+                <span class="prompt">&nbsp;&nbsp;tuze &lt;f&gt; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- edit file</span><br>
+                <span class="prompt">&nbsp;&nbsp;del  &lt;f&gt; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- delete file</span><br>
+                <span class="prompt">&nbsp;&nbsp;mkf &lt;f&gt; &lt;txt&gt; </span><span class="output">- create file with text</span><br>
+                <span class="prompt">&nbsp;&nbsp;calc &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- interactive calculator</span><br>
+                <span class="prompt">&nbsp;&nbsp;calc &lt;expr&gt; &nbsp;&nbsp;</span><span class="output">- evaluate expression</span><br>
+                <span class="prompt">&nbsp;&nbsp;time &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- show current time</span><br>
+                <span class="prompt">&nbsp;&nbsp;tez &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="output">- TEZ language REPL</span><br>
+                <span class="prompt">&nbsp;&nbsp;run &lt;f.tez&gt; &nbsp;&nbsp;</span><span class="output">- run TEZ script</span><br>
+                <span class="prompt">&gt; </span><span class="cursor"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FULL COMMAND TABLE -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">📋 Command Reference</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Command</th>
+                        <th>Syntax</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="cmd-name">hlp</td>
+                        <td class="cmd-syntax">hlp</td>
+                        <td class="cmd-desc">Show all available commands</td>
+                        <td class="cmd-syntax">hlp</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">clr</td>
+                        <td class="cmd-syntax">clr</td>
+                        <td class="cmd-desc">Clear the screen, reset cursor to top-left</td>
+                        <td class="cmd-syntax">clr</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">sinf</td>
+                        <td class="cmd-syntax">sinf</td>
+                        <td class="cmd-desc">Display system info (neofetch-style): OS, arch, kernel, FS, display, input</td>
+                        <td class="cmd-syntax">sinf</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">room</td>
+                        <td class="cmd-syntax">room</td>
+                        <td class="cmd-desc">List all files in root directory of FAT12. Shows name, extension, size in bytes.</td>
+                        <td class="cmd-syntax">room</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">show</td>
+                        <td class="cmd-syntax">show &lt;filename&gt;</td>
+                        <td class="cmd-desc">Read and print the contents of a file from FAT12 filesystem to screen.</td>
+                        <td class="cmd-syntax">show HELLO.TXT</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">tuze</td>
+                        <td class="cmd-syntax">tuze &lt;filename&gt;</td>
+                        <td class="cmd-desc">Open file in TUZE full-screen text editor. Creates file if it doesn't exist. Ctrl+S to save, Ctrl+Q to quit.</td>
+                        <td class="cmd-syntax">tuze notes.txt</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">del</td>
+                        <td class="cmd-syntax">del &lt;filename&gt;</td>
+                        <td class="cmd-desc">Delete a file from FAT12. Marks directory entry as 0xE5 and frees FAT clusters.</td>
+                        <td class="cmd-syntax">del old.txt</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">mkf</td>
+                        <td class="cmd-syntax">mkf &lt;filename&gt; [text]</td>
+                        <td class="cmd-desc">Create a new file. Optionally write text content immediately. If file exists, overwrites it.</td>
+                        <td class="cmd-syntax">mkf hello.txt hi there</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">calc</td>
+                        <td class="cmd-syntax">calc [expression]</td>
+                        <td class="cmd-desc">Calculator. Without args — interactive REPL mode (Ctrl+Q to quit). With args — evaluates immediately.</td>
+                        <td class="cmd-syntax">calc 2**10 + 5</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">time</td>
+                        <td class="cmd-syntax">time</td>
+                        <td class="cmd-desc">Show current time and date from RTC (CMOS). UTC+5 timezone. Format: HH:MM:SS DD/MM/YYYY.</td>
+                        <td class="cmd-syntax">time</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">tez</td>
+                        <td class="cmd-syntax">tez</td>
+                        <td class="cmd-desc">Enter TEZ language interactive REPL. Type one-line programs, press Enter to run. Ctrl+Q to quit.</td>
+                        <td class="cmd-syntax">tez</td>
+                    </tr>
+                    <tr>
+                        <td class="cmd-name">run</td>
+                        <td class="cmd-syntax">run &lt;file.tez&gt;</td>
+                        <td class="cmd-desc">Load a .tez source file from disk, compile to x86 and execute immediately.</td>
+                        <td class="cmd-syntax">run prog.tez</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- KEYBOARD SHORTCUTS -->
+    <div class="grid-2">
+        <div class="window">
+            <div class="window-titlebar">
+                <div class="title-left">⌨ Shell Shortcuts</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <table>
+                    <tr><th>Key</th><th>Action</th></tr>
+                    <tr><td class="cmd-name">Enter</td><td>Execute command</td></tr>
+                    <tr><td class="cmd-name">Backspace</td><td>Delete last character</td></tr>
+                    <tr><td class="cmd-name">↑ Arrow</td><td>Previous command (history)</td></tr>
+                    <tr><td class="cmd-name">↓ Arrow</td><td>Next command (history)</td></tr>
+                </table>
+                <hr class="divider">
+                <p class="text-dim" style="font-size:12px">Command history stores up to 16 entries.</p>
+            </div>
+        </div>
+
+        <div class="window">
+            <div class="window-titlebar">
+                <div class="title-left">📝 TUZE Editor Shortcuts</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <table>
+                    <tr><th>Key</th><th>Action</th></tr>
+                    <tr><td class="cmd-name">↑↓←→</td><td>Move cursor</td></tr>
+                    <tr><td class="cmd-name">Backspace</td><td>Delete character before cursor</td></tr>
+                    <tr><td class="cmd-name">Enter</td><td>New line</td></tr>
+                    <tr><td class="cmd-name">Ctrl+S</td><td>Save file to FAT12</td></tr>
+                    <tr><td class="cmd-name">Ctrl+Q</td><td>Quit editor</td></tr>
+                </table>
+                <hr class="divider">
+                <p class="text-dim" style="font-size:12px">Max file size: 4096 bytes. Status bar shows filename and cursor position.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALC DOCS -->
+    <div class="window">
+        <div class="window-titlebar">
+            <div class="title-left">🧮 Calculator Reference</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div>
+                    <h3>Operators</h3>
+                    <table>
+                        <tr><td class="cmd-name">+  -  *  /</td><td>Basic arithmetic</td></tr>
+                        <tr><td class="cmd-name">%</td><td>Modulo (remainder)</td></tr>
+                        <tr><td class="cmd-name">** or ^</td><td>Power (right-associative)</td></tr>
+                        <tr><td class="cmd-name">( )</td><td>Parentheses</td></tr>
+                    </table>
+                    <hr class="divider">
+                    <h3>Constants</h3>
+                    <table>
+                        <tr><td class="cmd-name">pi</td><td>3.14159265...</td></tr>
+                        <tr><td class="cmd-name">e</td><td>2.71828182...</td></tr>
+                    </table>
+                </div>
+                <div>
+                    <h3>Functions</h3>
+                    <table>
+                        <tr><td class="cmd-name">sin(x)</td><td>Sine (radians)</td></tr>
+                        <tr><td class="cmd-name">cos(x)</td><td>Cosine (radians)</td></tr>
+                        <tr><td class="cmd-name">tan(x) / tg(x)</td><td>Tangent</td></tr>
+                        <tr><td class="cmd-name">ctan(x) / ctg(x)</td><td>Cotangent</td></tr>
+                        <tr><td class="cmd-name">sqrt(x)</td><td>Square root</td></tr>
+                        <tr><td class="cmd-name">ln(x)</td><td>Natural logarithm</td></tr>
+                        <tr><td class="cmd-name">abs(x)</td><td>Absolute value</td></tr>
+                    </table>
+                    <hr class="divider">
+                    <h3>Examples</h3>
+                    <div class="code-block">
+                        calc 2**10<br>
+                        = 1024<br><br>
+                        calc sin(pi/2)<br>
+                        = 1<br><br>
+                        calc (100 % 7) * 3<br>
+                        = 6
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="taskbar">
+    <a href="index.html" class="start-btn"><span class="logo">⊞</span> TEZ_OS</a>
+    <div class="taskbar-nav">
+        <a href="index.html">Home</a>
+        <a href="shell.html" class="active">Shell</a>
+        <a href="tez.html">TEZ</a>
+        <a href="screenshots.html">Screenshots</a>
+        <a href="about.html">About</a>
+    </div>
+    <div class="taskbar-clock" id="clock">00:00:00</div>
+</div>
+<script>
+function updateClock(){const n=new Date();document.getElementById('clock').textContent=[n.getHours(),n.getMinutes(),n.getSeconds()].map(x=>String(x).padStart(2,'0')).join(':');}
+updateClock();setInterval(updateClock,1000);
+</script>
+</body>
+</html>

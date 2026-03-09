@@ -1,0 +1,472 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&family=Press+Start+2P&display=swap');
+
+:root {
+    --bg: #000080;
+    --bg2: #000000;
+    --window: #c0c0c0;
+    --window-dark: #808080;
+    --titlebar: #000080;
+    --titlebar-text: #ffffff;
+    --text: #00ff00;
+    --text-dim: #008800;
+    --text-bright: #ffffff;
+    --text-yellow: #ffff00;
+    --text-cyan: #00ffff;
+    --text-red: #ff4444;
+    --border-light: #ffffff;
+    --border-dark: #808080;
+    --border-darker: #404040;
+    --scanline: rgba(0,0,0,0.15);
+    --glow: 0 0 8px #00ff00, 0 0 16px rgba(0,255,0,0.3);
+    --glow-cyan: 0 0 8px #00ffff, 0 0 16px rgba(0,255,255,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+    background: var(--bg2);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: default;
+}
+
+/* scanline overlay */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        var(--scanline) 0px,
+        var(--scanline) 1px,
+        transparent 1px,
+        transparent 3px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* desktop wallpaper pattern */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+        radial-gradient(circle at 20% 50%, rgba(0,0,128,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(0,128,0,0.1) 0%, transparent 40%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── TASKBAR ── */
+.taskbar {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    height: 32px;
+    background: var(--window);
+    border-top: 2px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    padding: 0 4px;
+    gap: 4px;
+    z-index: 1000;
+    box-shadow: 0 -1px 0 var(--border-dark);
+}
+
+.start-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--window);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    padding: 2px 8px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #000;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: bold;
+}
+.start-btn:hover { border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark); }
+.start-btn .logo { font-size: 14px; }
+
+.taskbar-clock {
+    margin-left: auto;
+    background: var(--window);
+    border: 2px solid;
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    padding: 2px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: #000;
+    min-width: 80px;
+    text-align: center;
+}
+
+.taskbar-nav {
+    display: flex;
+    gap: 2px;
+}
+.taskbar-nav a {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--window);
+    border: 2px solid;
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    padding: 2px 10px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #000;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.taskbar-nav a:hover,
+.taskbar-nav a.active {
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    background: var(--titlebar);
+    color: #fff;
+}
+
+/* ── MAIN LAYOUT ── */
+.desktop {
+    position: relative;
+    z-index: 1;
+    padding: 16px 16px 48px;
+    min-height: 100vh;
+}
+
+/* ── WINDOW ── */
+.window {
+    background: var(--window);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    box-shadow: 4px 4px 0 var(--border-darker);
+    margin-bottom: 16px;
+}
+
+.window-titlebar {
+    background: var(--titlebar);
+    color: var(--titlebar-text);
+    padding: 3px 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    user-select: none;
+}
+
+.window-titlebar .title-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.window-controls {
+    display: flex;
+    gap: 2px;
+}
+.window-btn {
+    width: 16px; height: 14px;
+    background: var(--window);
+    border: 1px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    font-size: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    cursor: pointer;
+    font-family: monospace;
+}
+
+.window-body {
+    padding: 12px;
+    background: #000;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.window-body-gray {
+    padding: 12px;
+    background: var(--window);
+    color: #000;
+}
+
+/* ── TERMINAL WINDOW ── */
+.terminal {
+    background: #000;
+    color: var(--text);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    padding: 16px;
+    line-height: 1.4;
+}
+
+.terminal .prompt { color: var(--text-cyan); }
+.terminal .cmd    { color: var(--text-bright); }
+.terminal .output { color: var(--text); }
+.terminal .error  { color: var(--text-red); }
+.terminal .comment { color: var(--text-dim); }
+
+/* blinking cursor */
+.cursor::after {
+    content: '█';
+    animation: blink 1s step-end infinite;
+    color: var(--text);
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ── TYPOGRAPHY ── */
+h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 18px;
+    color: var(--text-bright);
+    text-shadow: 2px 2px 0 #000, 0 0 20px var(--text-cyan);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+h2 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 11px;
+    color: var(--text-yellow);
+    margin-bottom: 12px;
+    line-height: 1.8;
+}
+h3 {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--text-cyan);
+    margin-bottom: 8px;
+}
+
+p { margin-bottom: 10px; color: var(--text); }
+
+a { color: var(--text-cyan); text-decoration: underline; }
+a:hover { color: var(--text-yellow); }
+
+/* ── BUTTON ── */
+.btn {
+    display: inline-block;
+    background: var(--window);
+    border: 2px solid;
+    border-color: var(--border-light) var(--border-dark) var(--border-dark) var(--border-light);
+    padding: 6px 16px;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--border-darker);
+    transition: none;
+    white-space: nowrap;
+}
+.btn:hover {
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    box-shadow: none;
+    transform: translate(2px, 2px);
+    color: #000;
+}
+.btn:active {
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    box-shadow: none;
+    transform: translate(2px, 2px);
+}
+
+.btn-primary {
+    background: var(--titlebar);
+    color: #fff;
+    border-color: #6666ff var(--border-darker) var(--border-darker) #6666ff;
+    box-shadow: 2px 2px 0 #000, 0 0 12px rgba(0,0,255,0.4);
+}
+.btn-primary:hover { color: #fff; }
+
+.btn-download {
+    background: #008000;
+    color: #fff;
+    border-color: #00ff00 #004000 #004000 #00ff00;
+    box-shadow: 2px 2px 0 #000, 0 0 16px rgba(0,255,0,0.5);
+    font-size: 10px;
+    padding: 10px 24px;
+    animation: pulse-green 2s ease-in-out infinite;
+}
+.btn-download:hover { color: #fff; animation: none; }
+@keyframes pulse-green {
+    0%,100% { box-shadow: 2px 2px 0 #000, 0 0 16px rgba(0,255,0,0.5); }
+    50%      { box-shadow: 2px 2px 0 #000, 0 0 32px rgba(0,255,0,0.9); }
+}
+
+/* ── TABLE ── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+}
+th {
+    background: var(--titlebar);
+    color: #fff;
+    padding: 6px 10px;
+    text-align: left;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    border: 1px solid #6666ff;
+}
+td {
+    padding: 5px 10px;
+    border: 1px solid #003300;
+    vertical-align: top;
+}
+tr:nth-child(even) td { background: rgba(0,255,0,0.05); }
+tr:hover td { background: rgba(0,255,0,0.1); }
+
+.cmd-name { color: var(--text-cyan); font-weight: bold; }
+.cmd-syntax { color: var(--text-yellow); }
+.cmd-desc { color: var(--text); }
+
+/* ── CODE BLOCK ── */
+.code-block {
+    background: #000;
+    border: 1px solid #003300;
+    border-left: 3px solid var(--text-cyan);
+    padding: 12px;
+    margin: 10px 0;
+    font-family: 'VT323', monospace;
+    font-size: 17px;
+    color: var(--text);
+    overflow-x: auto;
+    line-height: 1.4;
+}
+.code-block .kw  { color: var(--text-cyan); }
+.code-block .fn  { color: var(--text-yellow); }
+.code-block .str { color: #ff9900; }
+.code-block .num { color: #ff66ff; }
+.code-block .cmt { color: #006600; }
+.code-block .type { color: #66ffff; }
+
+/* ── MARQUEE BAR ── */
+.marquee-bar {
+    background: var(--titlebar);
+    border-top: 1px solid #6666ff;
+    border-bottom: 1px solid #6666ff;
+    padding: 4px 0;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-bottom: 16px;
+}
+.marquee-inner {
+    display: inline-block;
+    animation: marquee 20s linear infinite;
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    color: var(--text-yellow);
+}
+@keyframes marquee { from{transform:translateX(100vw)} to{transform:translateX(-100%)} }
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+    height: 16px;
+    background: #000;
+    border: 2px solid;
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    overflow: hidden;
+}
+.progress-fill {
+    height: 100%;
+    background: repeating-linear-gradient(
+        90deg, #000080 0px, #000080 8px, #0000ff 8px, #0000ff 16px
+    );
+    animation: loading 2s steps(10) infinite;
+}
+@keyframes loading { from{width:0%} to{width:100%} }
+
+/* ── BADGE / TAG ── */
+.badge {
+    display: inline-block;
+    background: var(--titlebar);
+    color: var(--text-cyan);
+    border: 1px solid var(--text-cyan);
+    padding: 1px 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    margin: 2px;
+}
+
+/* ── SECTION DIVIDER ── */
+.divider {
+    border: none;
+    border-top: 1px solid #003300;
+    margin: 16px 0;
+}
+.divider-bright {
+    border-top: 1px solid #006600;
+}
+
+/* ── GRID ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+@media (max-width: 768px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+/* ── STATUS BAR ── */
+.statusbar {
+    background: var(--window);
+    border-top: 2px solid;
+    border-color: var(--border-dark) var(--border-light) var(--border-light) var(--border-dark);
+    padding: 2px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: #000;
+    display: flex;
+    gap: 16px;
+}
+.statusbar span { border-right: 1px solid var(--border-dark); padding-right: 16px; }
+
+/* ── PIXEL ART DECORATION ── */
+.pixel-corner {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--text-cyan);
+    box-shadow: 8px 0 0 var(--text-cyan), 0 8px 0 var(--text-cyan);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+@keyframes glitch {
+    0%,100% { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; }
+    25%      { text-shadow: -2px 0 #ff0000, 2px 0 #00ffff; transform: translate(2px); }
+    50%      { text-shadow: 2px 0 #ff0000, -2px 0 #00ffff; transform: translate(-1px); }
+    75%      { text-shadow: none; transform: none; }
+}
+
+.glitch:hover { animation: glitch 0.3s steps(2) infinite; }
+
+/* ── MISC ── */
+.text-green  { color: var(--text); }
+.text-cyan   { color: var(--text-cyan); }
+.text-yellow { color: var(--text-yellow); }
+.text-white  { color: var(--text-bright); }
+.text-red    { color: var(--text-red); }
+.text-dim    { color: var(--text-dim); }
+
+.mb-8  { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.mt-16 { margin-top: 16px; }
+
+.flex { display: flex; }
+.flex-center { display: flex; align-items: center; justify-content: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.gap-8  { gap: 8px; }
+.gap-16 { gap: 16px; }
+
+.text-center { text-align: center; }

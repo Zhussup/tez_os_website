@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEZ_OS — 32-bit Operating System</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.hero { padding: 32px 16px; text-align: center; position: relative; }
+.hero-ascii {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--text-cyan);
+    line-height: 1.2;
+    text-shadow: var(--glow-cyan);
+    margin-bottom: 24px;
+    animation: fadeIn 0.8s ease;
+}
+.hero-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 24px;
+    animation: fadeIn 1s ease 0.2s both;
+}
+.hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 32px;
+    animation: fadeIn 1s ease 0.4s both;
+}
+.download-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: fadeIn 1s ease 0.6s both;
+}
+.download-info {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+}
+.feature-icon { font-size: 24px; margin-bottom: 8px; display: block; }
+.boot-log {
+    font-family: 'VT323', monospace;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text);
+}
+.boot-log .ok   { color: #00ff00; }
+.boot-log .boot { color: var(--text-cyan); }
+.star-row { color: var(--text-yellow); letter-spacing: 4px; font-size: 20px; }
+</style>
+</head>
+<body>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+    <span class="marquee-inner">
+        ★ TEZ_OS v0.1 — 32-bit x86 Operating System built from scratch &nbsp;&nbsp;&nbsp;
+        ★ Custom bootloader · FAT12 · VGA text mode · PS/2 keyboard · TEZ language &nbsp;&nbsp;&nbsp;
+        ★ NOW AVAILABLE FOR DOWNLOAD &nbsp;&nbsp;&nbsp;
+        ★ TEZ_OS v0.1 — 32-bit x86 Operating System built from scratch &nbsp;&nbsp;&nbsp;
+    </span>
+</div>
+
+<div class="desktop">
+
+    <!-- HERO WINDOW -->
+    <div class="window" style="animation: fadeIn 0.5s ease">
+        <div class="window-titlebar">
+            <div class="title-left">⊞ TEZ_OS.EXE — Welcome</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div>
+                <div class="window-btn">□</div>
+                <div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="hero">
+                <div class="hero-ascii">
+ _______ _______ _______          _______ _______<br>
+|__   __|  _____|___   /        |  ___  ||  _____|<br>
+   | |  | |___     / /          | |   | || |______<br>
+   | |  |  ___|   / /           | |   | || ____  |<br>
+   | |  | |___   / /__  _______ | |___| ||_____| |<br>
+   |_|  |_____|_/_____| |_____| |_______||_______| 
+                </div>
+                <p class="hero-sub">
+                    A 32-bit operating system written from scratch in C and Assembly.<br>
+                    <span class="text-yellow">Real Mode → Protected Mode · FAT12 · VGA · PS/2 · TEZ lang</span>
+                </p>
+                <div class="hero-badges">
+                    <span class="badge">x86 32-bit</span>
+                    <span class="badge">FAT12</span>
+                    <span class="badge">VGA 80×25</span>
+                    <span class="badge">Custom Bootloader</span>
+                    <span class="badge">PS/2 Keyboard</span>
+                    <span class="badge">JZA Kernel</span>
+                    <span class="badge">TEZ Language</span>
+                    <span class="badge">RTC Clock</span>
+                    <span class="badge">PIT Timer</span>
+                </div>
+                <div class="download-section">
+                    <a href="os.img" download class="btn btn-download">
+                        ▼ DOWNLOAD os.img
+                    </a>
+                    <div class="download-info">
+                        Floppy disk image · 1.44MB · Run with QEMU
+                    </div>
+                    <div class="download-info" style="font-size:11px; color: #004400;">
+                        qemu-system-i386 -drive file=os.img,format=raw,if=floppy
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="statusbar">
+            <span>v0.1-alpha</span>
+            <span>arch: x86</span>
+            <span>kernel: JZA</span>
+            <span style="border:none">lang: TEZ</span>
+        </div>
+    </div>
+
+    <div class="grid-2">
+
+        <!-- LIVE TERMINAL -->
+        <div class="window" style="animation: fadeIn 0.6s ease 0.1s both">
+            <div class="window-titlebar">
+                <div class="title-left">▶ TEZ_OS — Live Shell</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+                </div>
+            </div>
+            <div class="window-body" style="padding:0">
+                <!-- output area -->
+                <div id="term-output" class="boot-log" style="
+                    padding: 10px 12px;
+                    min-height: 260px;
+                    max-height: 360px;
+                    overflow-y: auto;
+                    font-family: 'VT323', monospace;
+                    font-size: 17px;
+                    line-height: 1.45;
+                    background: #000;
+                    color: #00ff00;
+                "></div>
+                <!-- input row -->
+                <div style="display:flex;align-items:center;background:#000;border-top:1px solid #003300;padding:6px 12px;gap:6px">
+                    <span style="color:#00ffff;font-family:'VT323',monospace;font-size:18px;white-space:nowrap">&gt;</span>
+                    <input id="term-input" type="text" autocomplete="off" spellcheck="false"
+                        placeholder="type a command..."
+                        style="
+                            flex:1;background:transparent;border:none;outline:none;
+                            color:#fff;font-family:'VT323',monospace;font-size:18px;
+                            caret-color:#00ff00;
+                        ">
+                    <span style="color:#008800;font-family:'Share Tech Mono',monospace;font-size:10px">ENTER to run</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUICK START -->
+        <div class="window" style="animation: fadeIn 0.6s ease 0.2s both">
+            <div class="window-titlebar">
+                <div class="title-left">⚡ Quick Start</div>
+                <div class="window-controls">
+                    <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+                </div>
+            </div>
+            <div class="window-body">
+                <h3>1. Install QEMU</h3>
+                <div class="code-block">sudo apt install qemu-system-x86</div>
+                <h3>2. Download</h3>
+                <div class="code-block">wget https://tez-os.dev/os.img</div>
+                <h3>3. Run</h3>
+                <div class="code-block">qemu-system-i386 \<br>  -drive file=os.img,<br>  format=raw,if=floppy</div>
+                <h3>4. Build from source</h3>
+                <div class="code-block">
+                    <span class="cmt"># install deps</span><br>
+                    sudo apt install nasm gcc-multilib \<br>
+                    &nbsp; binutils make qemu-system-x86 mtools<br><br>
+                    <span class="cmt"># build</span><br>
+                    make clean &amp;&amp; make<br>
+                    qemu-system-i386 -drive \<br>
+                    &nbsp; file=os.img,format=raw,if=floppy
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="window" style="animation: fadeIn 0.6s ease 0.3s both">
+        <div class="window-titlebar">
+            <div class="title-left">★ Features</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-3">
+                <div>
+                    <h3>🖥 Bootloader</h3>
+                    <p>Custom 16-bit bootloader with BPB/FAT12 header. Switches CPU from Real Mode to Protected Mode, loads kernel via BIOS INT 13h Extended Read (DAP).</p>
+                </div>
+                <div>
+                    <h3>⚙ JZA Kernel</h3>
+                    <p>32-bit flat memory kernel. IDT setup, PIC remapping, IRQ handlers for keyboard (IRQ1) and PIT timer (IRQ0). VGA text mode 80×25 with scroll support.</p>
+                </div>
+                <div>
+                    <h3>💾 FAT12 FS</h3>
+                    <p>Full FAT12 driver: read, write, delete files. ATA PIO disk driver. Root directory listing. Compatible with standard FAT12 floppy images (mtools).</p>
+                </div>
+                <div>
+                    <h3>⌨ Shell</h3>
+                    <p>Interactive shell with command history (↑/↓), backspace, command parsing. 10 built-in commands. Color output. Real-time clock in top-right corner.</p>
+                </div>
+                <div>
+                    <h3>📝 TUZE Editor</h3>
+                    <p>Full-screen text editor (inspired by nano). Line numbers, cursor navigation, Ctrl+S save, Ctrl+Q quit. Reads/writes files via FAT12.</p>
+                </div>
+                <div>
+                    <h3>🧮 TEZ Language</h3>
+                    <p>Custom programming language. Compiles to x86 machine code in-kernel. Variables, functions, if/else, while/for loops, cons.out() output.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PROJECT STRUCTURE -->
+    <div class="window" style="animation: fadeIn 0.6s ease 0.4s both">
+        <div class="window-titlebar">
+            <div class="title-left">📁 Project Structure</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body">
+            <div class="grid-2">
+                <div class="code-block" style="font-size:15px">
+TEZ_OS/<br>
+├── <span class="kw">boot/</span><br>
+│   └── boot.asm &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># 16-bit bootloader</span><br>
+├── <span class="kw">kernel/</span><br>
+│   ├── entry.asm &nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># _start</span><br>
+│   ├── kernel.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># main + VGA + shell</span><br>
+│   ├── idt.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># IDT + PIC</span><br>
+│   ├── keyboard.c &nbsp;&nbsp;&nbsp;<span class="cmt"># PS/2 driver</span><br>
+│   ├── keyboard_isr.asm<br>
+│   ├── ata.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># ATA PIO</span><br>
+│   ├── fat12.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># FAT12 FS</span><br>
+│   ├── tuze.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># text editor</span><br>
+│   ├── calc.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># calculator</span><br>
+│   ├── rtc.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># RTC CMOS</span><br>
+│   ├── pit.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># PIT timer</span><br>
+│   ├── pit_isr.asm<br>
+│   ├── tez_lexer.c &nbsp;&nbsp;<span class="cmt"># TEZ lexer</span><br>
+│   ├── tez_parser.c &nbsp;<span class="cmt"># TEZ parser</span><br>
+│   ├── tez_codegen.c &nbsp;<span class="cmt"># x86 codegen</span><br>
+│   ├── tez.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt"># TEZ entry</span><br>
+│   └── linker.ld<br>
+├── Makefile<br>
+└── README.md
+                </div>
+                <div>
+                    <h3>Build Tools</h3>
+                    <table>
+                        <tr><td class="cmd-name">nasm</td><td>assembler (.asm files)</td></tr>
+                        <tr><td class="cmd-name">gcc -m32</td><td>C compiler (32-bit)</td></tr>
+                        <tr><td class="cmd-name">ld</td><td>linker (ELF → binary)</td></tr>
+                        <tr><td class="cmd-name">objcopy</td><td>ELF → raw binary</td></tr>
+                        <tr><td class="cmd-name">dd</td><td>disk image creation</td></tr>
+                        <tr><td class="cmd-name">mkdosfs</td><td>FAT12 format</td></tr>
+                        <tr><td class="cmd-name">mcopy</td><td>copy files to image</td></tr>
+                        <tr><td class="cmd-name">qemu</td><td>emulator</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAV LINKS -->
+    <div class="window" style="animation: fadeIn 0.6s ease 0.5s both">
+        <div class="window-titlebar">
+            <div class="title-left">🔗 Navigation</div>
+            <div class="window-controls">
+                <div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">×</div>
+            </div>
+        </div>
+        <div class="window-body-gray">
+            <div class="flex gap-16" style="flex-wrap:wrap">
+                <a href="shell.html" class="btn">⌨ Shell Docs</a>
+                <a href="tez.html" class="btn">🧮 TEZ Language</a>
+                <a href="screenshots.html" class="btn">📸 Screenshots</a>
+                <a href="about.html" class="btn">ℹ About &amp; Code</a>
+                <a href="os.img" download class="btn btn-download">▼ Download</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- TASKBAR -->
+<div class="taskbar">
+    <a href="index.html" class="start-btn"><span class="logo">⊞</span> TEZ_OS</a>
+    <div class="taskbar-nav">
+        <a href="index.html" class="active">Home</a>
+        <a href="shell.html">Shell</a>
+        <a href="tez.html">TEZ</a>
+        <a href="screenshots.html">Screenshots</a>
+        <a href="about.html">About</a>
+    </div>
+    <div class="taskbar-clock" id="clock">00:00:00</div>
+</div>
+
+<script>
+// ── taskbar clock ────────────────────────────────────────────────────────────
+function updateClock() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2,'0');
+    const m = String(now.getMinutes()).padStart(2,'0');
+    const s = String(now.getSeconds()).padStart(2,'0');
+    document.getElementById('clock').textContent = h+':'+m+':'+s;
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── terminal ─────────────────────────────────────────────────────────────────
+const out   = document.getElementById('term-output');
+const input = document.getElementById('term-input');
+const history = [];
+let histIdx = -1;
+
+function esc(s) {
+    return String(s)
+        .replace(/&/g,'&amp;')
+        .replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;');
+}
+
+function append(html) {
+    out.insertAdjacentHTML('beforeend', html);
+    out.scrollTop = out.scrollHeight;
+}
+
+function printPrompt(cmd) {
+    append(`<span style="color:#00ffff">&gt; </span><span style="color:#fff">${esc(cmd)}</span><br>`);
+}
+
+function renderResponse(data) {
+    switch (data.type) {
+
+    case 'table':
+        append(`<span style="color:#ffff00">Available commands:</span><br>`);
+        for (const row of data.rows) {
+            append(`  <span style="color:#00ffff">${esc(row.cmd).padEnd(18,' ').replace(/ /g,'&nbsp;')}</span><span style="color:#00ff00">- ${esc(row.desc)}</span><br>`);
+        }
+        break;
+
+    case 'neofetch': {
+        const logo = [
+            ` <span style="color:#00ffff"> _______ _______ _______          _______ _______ </span>`,
+            ` <span style="color:#00ffff">|__   __|  _____|___   /        |  ___  ||  _____|</span>`,
+            ` <span style="color:#00ffff">   | |  | |___     / /          | |   | || |______</span>`,
+            ` <span style="color:#00ffff">   | |  |  ___|   / /           | |   | || ____  |</span>`,
+            ` <span style="color:#00ffff">   | |  | |___   / /__  _______ | |___| ||_____| |</span>`,
+            ` <span style="color:#00ffff">   |_|  |_____|_/_____| |_____| |_______||_______| </span>`,
+        ];
+        for (const l of logo) append(l + '<br>');
+        append('<br>');
+        for (const row of data.lines) {
+            append(`  <span style="color:#fff">  ${esc(row.label).padEnd(8,' ').replace(/ /g,'&nbsp;')}: </span><span style="color:#00ff00">${esc(row.value)}</span><br>`);
+        }
+        break;
+    }
+
+    case 'room':
+        if (!data.entries.length) {
+            append(`<span style="color:#888">no files found.</span><br>`);
+            break;
+        }
+        append(`<span style="color:#ffff00">Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Size</span><br>`);
+        append(`<span style="color:#fff">─────────────────────────</span><br>`);
+        for (const e of data.entries) {
+            const name = esc(e.name).padEnd(16,' ').replace(/ /g,'&nbsp;');
+            append(`<span style="color:#00ffff">${name}</span><span style="color:#00ff00">${e.size} B</span><br>`);
+        }
+        append(`<br><span style="color:#00ff00">${data.entries.length} file(s)</span><br>`);
+        break;
+
+    case 'text':
+        append(`<span style="color:#fff">${esc(data.text).replace(/\n/g,'<br>')}</span>`);
+        if (!data.text.endsWith('\n')) append('<br>');
+        break;
+
+    case 'calc':
+        append(`<span style="color:#888">${esc(data.expr)}</span><br>`);
+        append(`<span style="color:#00ff00">= ${esc(data.result)}</span><br>`);
+        break;
+
+    case 'time':
+        append(`<span style="color:#00ffff">time: </span><span style="color:#fff">${esc(data.time)}</span>&nbsp;&nbsp;`);
+        append(`<span style="color:#00ffff">date: </span><span style="color:#fff">${esc(data.date)}</span>&nbsp;&nbsp;`);
+        append(`<span style="color:#888">(${esc(data.tz)})</span><br>`);
+        break;
+
+    case 'clear':
+        out.innerHTML = '';
+        return;
+
+    case 'error':
+        append(`<span style="color:#ff4444">error: ${esc(data.msg)}</span><br>`);
+        break;
+
+    default:
+        append(`<span style="color:#888">${esc(JSON.stringify(data))}</span><br>`);
+    }
+    append('<br>');
+}
+
+async function runCmd(cmd) {
+    printPrompt(cmd);
+    try {
+        const res  = await fetch('/api/cmd', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ cmd })
+        });
+        const data = await res.json();
+        renderResponse(data);
+    } catch (e) {
+        append(`<span style="color:#ff4444">connection error — is the server running?</span><br><br>`);
+    }
+}
+
+// boot sequence on page load
+async function bootSequence() {
+    const lines = [
+        ['boot', 'BIOS POST...'],
+        ['boot', 'Loading bootloader from sector 0...'],
+        ['plain','OEM: MSDOS5.0 / FAT12 / 1.44MB'],
+        ['boot', 'Switching to Protected Mode...'],
+        ['boot', 'Loading kernel (JZA) from LBA 50...'],
+        ['boot', 'IDT init...'],
+        ['boot', 'PIC remap IRQ0+IRQ1...'],
+        ['boot', 'PIT 100Hz...'],
+        ['boot', 'PS/2 keyboard driver...'],
+        ['boot', 'TEZ lang v0.1...'],
+    ];
+    for (const [type, text] of lines) {
+        await new Promise(r => setTimeout(r, 60));
+        if (type === 'boot')
+            append(`<span style="color:#00ffff">${esc(text)}</span> <span style="color:#00ff00">[OK]</span><br>`);
+        else
+            append(`<span style="color:#888">${esc(text)}</span><br>`);
+    }
+    await new Promise(r => setTimeout(r, 120));
+    append(`<br><span style="color:#ffff00">TEZ_OS ready.</span><br>`);
+    append(`<span style="color:#555">type '<span style="color:#00ffff">hlp</span>' for commands</span><br><br>`);
+    input.focus();
+}
+
+bootSequence();
+
+// keyboard handling
+input.addEventListener('keydown', async (e) => {
+    if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        input.value = '';
+        histIdx = -1;
+        if (!cmd) return;
+        history.unshift(cmd);
+        if (history.length > 50) history.pop();
+        await runCmd(cmd);
+        input.focus();
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (histIdx < history.length - 1) histIdx++;
+        input.value = history[histIdx] || '';
+    } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (histIdx > 0) histIdx--;
+        else { histIdx = -1; input.value = ''; }
+        input.value = histIdx >= 0 ? history[histIdx] : '';
+    }
+});
+
+// click anywhere on terminal focuses input
+out.addEventListener('click', () => input.focus());
+</script>
+</body>
+</html>
